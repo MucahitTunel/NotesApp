@@ -11,6 +11,8 @@ import { HEADER_HEIGHT } from '../constants/layout';
 import CustomHeader from '../components/CustomHeader';
 import StatusDialog from '../components/StatusDialog';
 import ImportanceSelector from '../components/ImportanceSelector';
+import CategorySelector from '../components/CategorySelector';
+import { Category } from '../realm/models/Category';
 
 const { useRealm } = RealmContext;
 
@@ -19,6 +21,7 @@ const AddNoteScreen = ({ navigation }: any) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [importance, setImportance] = useState(1);
+  const [category, setCategory] = useState<Category | null>(null);
   const [statusDialog, setStatusDialog] = useState({
     visible: false,
     type: 'success' as 'success' | 'error',
@@ -66,6 +69,7 @@ const AddNoteScreen = ({ navigation }: any) => {
           title: title.trim(),
           content: content.trim(),
           importance,
+          category,
           createdAt: new Date(),
         });
       });
@@ -115,6 +119,11 @@ const AddNoteScreen = ({ navigation }: any) => {
         <ImportanceSelector 
           importance={importance}
           onSelect={setImportance}
+        />
+
+        <CategorySelector
+          selectedCategory={category}
+          onSelect={setCategory}
         />
 
         <View style={styles.inputContainer}>

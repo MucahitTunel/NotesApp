@@ -1,4 +1,5 @@
 import { Realm } from '@realm/react';
+import { Category } from './Category';
 
 export class Note extends Realm.Object {
   _id!: string;
@@ -6,6 +7,7 @@ export class Note extends Realm.Object {
   content!: string;
   importance!: number;
   createdAt!: Date;
+  category?: Category;
 
   static schema = {
     name: 'Note',
@@ -16,6 +18,7 @@ export class Note extends Realm.Object {
       content: 'string',
       importance: 'int',
       createdAt: 'date',
+      category: 'Category?',
     },
   };
 } 

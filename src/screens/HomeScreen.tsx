@@ -55,9 +55,10 @@ const HomeScreen = ({ navigation }: any) => {
     navigation.navigate('AddNote');
   };
 
-  const handleLongPress = (noteId: string) => {
-    setIsSelectionMode(true);
-    setSelectedNotes([noteId]);
+  const handleLongPress = () => {
+    if (!isSelectionMode) {
+      setIsSelectionMode(true);
+    }
   };
 
   const handleNoteSelect = (noteId: string) => {
@@ -80,6 +81,8 @@ const HomeScreen = ({ navigation }: any) => {
         }
         return [...prev, noteId];
       });
+    } else {
+      navigation.navigate('EditNote', { noteId });
     }
   };
 
@@ -185,7 +188,7 @@ const HomeScreen = ({ navigation }: any) => {
       }
     };
 
-    const handleLongPress = () => {
+    const handleItemLongPress = () => {
       if (!isSelectionMode) {
         setIsSelectionMode(true);
         handleNoteSelect(item._id);
@@ -194,24 +197,45 @@ const HomeScreen = ({ navigation }: any) => {
 
     return (
       <TouchableOpacity
-        testID="note-item"
         style={[styles.noteItem, isSelected && styles.selectedNoteItem]}
         onPress={handlePress}
-        onLongPress={handleLongPress}>
+        onLongPress={handleItemLongPress}
+        testID="note-item">
         <View style={styles.noteHeader}>
           <Text style={styles.noteTitle} numberOfLines={1}>
             {item.title}
           </Text>
-          <ImportanceDots level={item.importance as 1 | 2 | 3 | 4 | 5} />
+          {item.category && (
+            <View
+              style={[
+                styles.categoryTag,
+                { backgroundColor: item.category.color + '20' },
+              ]}>
+              <View
+                style={[
+                  styles.categoryDot,
+                  { backgroundColor: item.category.color },
+                ]}
+              />
+              <Text
+                style={[
+                  styles.categoryText,
+                  { color: item.category.color },
+                ]}>
+                {item.category.name}
+              </Text>
+            </View>
+          )}
         </View>
-        {item.content ? (
-          <Text style={styles.noteContent} numberOfLines={2}>
-            {item.content}
-          </Text>
-        ) : null}
-        <Text style={styles.noteDate}>
-          {moment(item.createdAt).format('DD MMMM YYYY, HH:mm')}
+        <Text style={styles.noteContent} numberOfLines={2}>
+          {item.content}
         </Text>
+        <View style={styles.noteFooter}>
+          <ImportanceDots level={item.importance as 1 | 2 | 3 | 4 | 5} />
+          <Text style={styles.noteDate}>
+            {moment(item.createdAt).format('DD.MM.YYYY HH:mm')}
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -362,8 +386,8 @@ const styles = StyleSheet.create({
   },
   noteHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 8,
   },
   noteTitle: {
@@ -381,6 +405,28 @@ const styles = StyleSheet.create({
   noteDate: {
     fontSize: 12,
     color: '#999999',
+  },
+  categoryTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  categoryDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 4,
+  },
+  categoryText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  noteFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
 

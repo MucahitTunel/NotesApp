@@ -13,6 +13,8 @@ import CustomHeader from '../components/CustomHeader';
 import StatusDialog from '../components/StatusDialog';
 import ImportanceSelector from '../components/ImportanceSelector';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import CategorySelector from '../components/CategorySelector';
+import { Category } from '../realm/models/Category';
 
 const { useRealm } = RealmContext;
 
@@ -40,6 +42,7 @@ const EditNoteScreen: React.FC<EditNoteScreenProps> = ({ navigation, route }) =>
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [importance, setImportance] = useState(1);
+  const [category, setCategory] = useState<Category | null>(null);
   const [statusDialog, setStatusDialog] = useState({
     visible: false,
     type: 'success' as 'success' | 'error',
@@ -52,6 +55,7 @@ const EditNoteScreen: React.FC<EditNoteScreenProps> = ({ navigation, route }) =>
       setTitle(note.title);
       setContent(note.content || '');
       setImportance(note.importance);
+      setCategory(note.category || null);
     }
   }, [noteId]);
 
@@ -96,6 +100,7 @@ const EditNoteScreen: React.FC<EditNoteScreenProps> = ({ navigation, route }) =>
           note.title = title.trim();
           note.content = content.trim();
           note.importance = importance;
+          note.category = category;
         }
       });
 
@@ -144,6 +149,11 @@ const EditNoteScreen: React.FC<EditNoteScreenProps> = ({ navigation, route }) =>
         <ImportanceSelector 
           importance={importance}
           onSelect={setImportance}
+        />
+
+        <CategorySelector
+          selectedCategory={category}
+          onSelect={setCategory}
         />
 
         <View style={styles.inputContainer}>
